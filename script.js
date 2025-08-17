@@ -162,11 +162,14 @@ document.addEventListener('DOMContentLoaded', function() {
             </button>
         `;
         
-        // Estilos de la notificación
+        // Estilos de la notificación usando variables CSS
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-        const bgColor = currentTheme === 'dark' ? '#0f172a' : '#ffffff';
-        const borderColor = currentTheme === 'dark' ? '#475569' : '#e2e8f0';
-        const textColor = currentTheme === 'dark' ? '#ffffff' : '#1e293b';
+        const root = document.documentElement;
+        const computedStyle = getComputedStyle(root);
+        
+        const bgColor = computedStyle.getPropertyValue('--bg-card').trim();
+        const borderColor = computedStyle.getPropertyValue('--gray-200').trim();
+        const textColor = computedStyle.getPropertyValue('--text-primary').trim();
         
         notification.style.cssText = `
             position: fixed;
@@ -340,10 +343,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Función para actualizar notificaciones existentes cuando cambie el tema
     function updateExistingNotifications(theme) {
         const notifications = document.querySelectorAll('.notification');
+        const root = document.documentElement;
+        const computedStyle = getComputedStyle(root);
+        
         notifications.forEach(notification => {
-            const bgColor = theme === 'dark' ? '#0f172a' : '#ffffff';
-            const borderColor = theme === 'dark' ? '#475569' : '#e2e8f0';
-            const textColor = theme === 'dark' ? '#ffffff' : '#1e293b';
+            const bgColor = computedStyle.getPropertyValue('--bg-card').trim();
+            const borderColor = computedStyle.getPropertyValue('--gray-200').trim();
+            const textColor = computedStyle.getPropertyValue('--text-primary').trim();
             
             notification.style.backgroundColor = bgColor;
             notification.style.borderColor = borderColor;

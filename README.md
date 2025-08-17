@@ -1,6 +1,6 @@
 # 🚀 Dashboard de Gestión de Inventario
 
-Un dashboard administrativo moderno y responsivo desarrollado para la actividad universitaria de Estructuras de Datos. Este proyecto demuestra el uso avanzado de HTML5, CSS Grid, Flexbox y JavaScript para crear una interfaz de usuario profesional y accesible.
+Un dashboard administrativo moderno y responsivo desarrollado para la actividad 3 del curso de Estructuras de Datos del programa Ingenieria de Software de la Universidad Manuela Beltran. Este proyecto demuestra el uso avanzado de HTML5, CSS Grid, Flexbox y JavaScript para crear una interfaz de usuario profesional y accesible.
 
 ## 📋 Descripción del Proyecto
 
@@ -275,4 +275,4 @@ Este proyecto es desarrollado con fines educativos para la actividad universitar
 
 **¡Gracias por revisar este proyecto!** 🎉
 
-Para cualquier pregunta o sugerencia sobre el dashboard, no dudes en contactar al desarrollador.
+Para cualquier pregunta o sugerencia sobre el dashboard, no dudes en contactarme al correo dumarpabon.ae@academia.umb.edu.co. 😉
