@@ -432,9 +432,10 @@ body {
     display: flex;
     flex-direction: column;
     flex: 1;
-    width: 40%;
+    width: 50%;
     padding-right: var(--spacing-2);
     z-index: 2;
+    justify-content: space-between;
 }
 
 .summary-card:hover {
@@ -448,23 +449,25 @@ body {
     position: absolute;
     top: 0;
     right: 0;
-    width: 60%;
+    width: 50%;
     height: 100%;
-    opacity: 0.9;
-    transition: opacity var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
-    border-radius: 0 var(--border-radius-xl) var(--border-radius-xl) 0;
     display: flex;
-    align-items: end;
-    justify-content: space-around;
-    gap: 3px;
-    padding: var(--spacing-4);
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-3);
     background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
+    border-radius: 0 var(--border-radius-xl) var(--border-radius-xl) 0;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-mini-chart canvas {
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: 90%;
 }
 
 .summary-card:hover .card-mini-chart {
-    opacity: 1;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08);
     transform: scale(1.02);
 }
 
@@ -591,49 +594,7 @@ body {
     background-repeat: no-repeat;
 }
 
-@keyframes miniChartGrow {
-    0% {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-    100% {
-        opacity: 0.9;
-        transform: scale(1);
-    }
-}
 
-@keyframes barGrowUp {
-    0% {
-        height: 0%;
-        opacity: 0;
-    }
-    100% {
-        height: var(--bar-height, 100%);
-        opacity: 1;
-    }
-}
-
-@keyframes barGrowDown {
-    0% {
-        height: 0%;
-        opacity: 0;
-    }
-    100% {
-        height: var(--bar-height, 100%);
-        opacity: 1;
-    }
-}
-
-@keyframes barGrowStable {
-    0% {
-        height: 0%;
-        opacity: 0;
-    }
-    100% {
-        height: var(--bar-height, 100%);
-        opacity: 1;
-    }
-}
 
 .card-icon {
     width: 60px;
@@ -710,11 +671,45 @@ body {
     background-color: rgba(239, 68, 68, 0.2);
 }
 
-/* Sección de gráficos */
-.charts-section {
+/* Dashboard Grid Layout - CSS Grid para layout principal */
+.dashboard-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-8);
+    grid-template-areas: 
+        "chart1 chart2 table"
+        "chart1 chart2 table";
+    grid-template-columns: 1fr 1fr 1.5fr;
+    grid-template-rows: auto;
+    gap: var(--spacing-6);
+    margin-top: var(--spacing-8);
+}
+
+/* Definir áreas del grid */
+.chart-item:first-child {
+    grid-area: chart1;
+}
+
+.chart-item:last-of-type {
+    grid-area: chart2;
+}
+
+.table-item {
+    grid-area: table;
+}
+
+/* Estilos para los elementos del grid */
+.grid-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-item .chart-card {
+    height: 100%;
+    min-height: 350px;
+}
+
+.table-item .table-card {
+    height: 100%;
+    min-height: 350px;
 }
 
 .chart-card, .table-card {
@@ -725,6 +720,9 @@ body {
     overflow: hidden;
     transition: background-color var(--theme-transition), border-color var(--theme-transition);
     animation: cardSlideIn 0.8s ease-out;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 @keyframes cardSlideIn {
@@ -757,147 +755,69 @@ body {
     gap: var(--spacing-2);
 }
 
-/* Gráfico de barras */
-.chart-placeholder {
+/* Contenedor de gráficas */
+.chart-container {
     padding: var(--spacing-6);
-    min-height: 300px;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    padding-bottom: var(--spacing-10);
 }
 
-.chart-bars {
-    display: flex;
-    align-items: end;
-    justify-content: space-around;
-    gap: var(--spacing-6);
-    height: 200px;
-    width: 100%;
-    position: relative;
-    padding-bottom: 50px; /* Espacio para las etiquetas */
+.chart-container canvas {
+    max-width: 100% !important;
+    height: auto !important;
 }
 
-.chart-bar {
-    background: linear-gradient(to top, var(--primary-color), var(--primary-light));
-    border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
-    width: 50px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: all var(--transition-normal);
-    animation: barGrow 1.5s ease-out;
-    animation-fill-mode: both;
-    box-shadow: var(--shadow-md);
-}
-
-/* Alturas específicas para cada barra */
-.chart-bar:nth-child(1) { 
-    height: 60%; 
-    animation-delay: 0.1s; 
-}
-.chart-bar:nth-child(2) { 
-    height: 80%; 
-    animation-delay: 0.3s; 
-}
-.chart-bar:nth-child(3) { 
-    height: 100%; 
-    animation-delay: 0.5s; 
-}
-.chart-bar:nth-child(4) { 
-    height: 70%; 
-    animation-delay: 0.7s; 
-}
-.chart-bar:nth-child(5) { 
-    height: 90%; 
-    animation-delay: 0.9s; 
-}
-
-@keyframes barGrow {
-    0% {
-        height: 0% !important;
-        opacity: 0;
-        transform: scaleY(0);
-    }
-    50% {
-        opacity: 1;
-        transform: scaleY(0.5);
-    }
-    100% {
-        opacity: 1;
-        transform: scaleY(1);
+/* Responsividad para el grid del dashboard */
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-areas: 
+            "chart1 chart2"
+            "table table";
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
     }
 }
 
-.chart-bar:hover {
-    transform: scale(1.05);
-    box-shadow: var(--shadow-lg);
-    filter: brightness(1.1);
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-areas: 
+            "chart1"
+            "chart2"
+            "table";
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        gap: var(--spacing-4);
+    }
+    
+    .chart-container {
+        min-height: 250px;
+        padding: var(--spacing-4);
+    }
+    
+    .chart-item .chart-card,
+    .table-item .table-card {
+        min-height: 300px;
+    }
 }
 
-/* Línea de base del gráfico */
-.chart-bars::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--gray-300);
-    border-radius: var(--border-radius-sm);
-}
 
-/* Eje Y del gráfico */
-.chart-bars::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    top: 0;
-    width: 2px;
-    background: var(--gray-300);
-    border-radius: var(--border-radius-sm);
-}
-
-.bar-label {
-    position: absolute;
-    bottom: -40px;
-    font-size: var(--font-size-sm);
-    color: var(--text-secondary);
-    font-weight: 500;
-    text-align: center;
-    width: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    text-transform: capitalize;
-    letter-spacing: 0.5px;
-}
-
-.bar-value {
-    position: absolute;
-    top: -30px;
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-    color: var(--primary-color);
-    background: var(--bg-card);
-    padding: 2px 6px;
-    border-radius: var(--border-radius-sm);
-    box-shadow: var(--shadow-sm);
-    white-space: nowrap;
-}
 
 /* Tabla de datos */
 .table-wrapper {
     overflow-x: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .data-table {
     width: 100%;
     border-collapse: collapse;
     font-size: var(--font-size-sm);
+    flex: 1;
 }
 
 .data-table th,
@@ -1118,24 +1038,8 @@ body {
         align-items: stretch;
     }
     
-    .chart-bars {
-        gap: var(--spacing-2);
-        padding-bottom: 30px;
-    }
-    
-    .chart-bar {
-        width: 35px;
-    }
-    
-    .bar-label {
-        font-size: 0.75rem;
-        bottom: -35px;
-    }
-    
-    .bar-value {
-        font-size: 0.75rem;
-        top: -25px;
-        padding: 1px 4px;
+    .chart-container {
+        min-height: 250px;
     }
     
     /* Gráficas pequeñas en móvil */
@@ -1144,8 +1048,10 @@ body {
         height: 100%;
         top: 0;
         right: 0;
-        background-size: 6% 100%, 6% 100%, 6% 100%, 6% 100%, 6% 100% !important;
-        background-position: 15% 0%, 35% 0%, 55% 0%, 75% 0%, 95% 0% !important;
+    }
+    
+    .card-mini-chart canvas {
+        max-height: 60px;
     }
     
     .card-content {
@@ -1446,37 +1352,39 @@ body {
     color: var(--text-primary);
 }
 
-[data-theme="dark"] .bar-label {
-    color: var(--text-secondary);
+/* Modo oscuro para gráficas Chart.js */
+[data-theme="dark"] .chart-container {
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius-lg);
 }
 
-[data-theme="dark"] .bar-value {
-    color: var(--primary-light);
-    background: var(--bg-card);
-    border: 1px solid var(--gray-600);
+/* Mejorar la apariencia de las gráficas */
+.chart-card .chart-container {
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
 }
 
-[data-theme="dark"] .chart-bars::before,
-[data-theme="dark"] .chart-bars::after {
-    background: var(--gray-600);
+/* Mejorar la apariencia general del dashboard */
+.dashboard-grid {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    padding: var(--spacing-6);
+    border-radius: var(--border-radius-xl);
+    border: 1px solid var(--gray-200);
 }
 
-[data-theme="dark"] .chart-bar {
-    box-shadow: var(--shadow-md);
-}
-
-[data-theme="dark"] .chart-bar:hover {
-    box-shadow: var(--shadow-lg);
-    filter: brightness(1.2);
+[data-theme="dark"] .dashboard-grid {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    border-color: var(--gray-700);
 }
 
 /* Gráficas pequeñas en modo oscuro */
 [data-theme="dark"] .card-mini-chart {
-    opacity: 1;
+    background: rgba(255, 255, 255, 0.08);
+    border-left-color: rgba(255, 255, 255, 0.15);
 }
 
 [data-theme="dark"] .summary-card:hover .card-mini-chart {
-    opacity: 1;
+    background: rgba(255, 255, 255, 0.12);
 }
 
 [data-theme="dark"] .mini-chart-positive {
@@ -1597,7 +1505,7 @@ body {
     background-color: var(--bg-secondary);
 }
 
-[data-theme="dark"] .charts-section {
+[data-theme="dark"] .dashboard-grid {
     background-color: var(--bg-secondary);
 }
 

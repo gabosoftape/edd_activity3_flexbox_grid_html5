@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const dashboardContainer = document.querySelector('.dashboard-container');
     const navLinks = document.querySelectorAll('.nav-link');
     const summaryCards = document.querySelectorAll('.summary-card');
-    const chartBars = document.querySelectorAll('.chart-bar');
     
     // Estado del sidebar
     let sidebarCollapsed = false;
@@ -94,18 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Función para animar las barras del gráfico
-    function animateChartBars() {
-        chartBars.forEach((bar, index) => {
-            const originalHeight = bar.style.height;
-            bar.style.height = '0%';
-            
-            setTimeout(() => {
-                bar.style.transition = 'height 0.8s ease-out';
-                bar.style.height = originalHeight;
-            }, index * 200);
-        });
-    }
+
     
     // Función para actualizar datos en tiempo real (simulado)
     function updateDashboardData() {
@@ -297,6 +285,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 localStorage.setItem('dashboard-theme', 'light');
                 console.log('Tema claro aplicado');
             }
+            
+            // Actualizar tema de las gráficas
+            setTimeout(() => {
+                updateChartsTheme();
+            }, 100);
         }
         
         // Aplicar tema inicial
@@ -389,7 +382,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Animar elementos al cargar
         setTimeout(() => {
             animateSummaryCards();
-            animateChartBars();
         }, 500);
         
         // Inicializar funcionalidades
@@ -451,9 +443,380 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Función para inicializar las gráficas con Chart.js
+    function initializeCharts() {
+        console.log('Inicializando gráficas con Chart.js...');
+        
+        // Configuración del tema para Chart.js
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const textColor = isDark ? '#ffffff' : '#0f172a';
+        const gridColor = isDark ? '#475569' : '#e2e8f0';
+        const backgroundColor = isDark ? '#1e293b' : '#ffffff';
+        
+        // Mini-gráficas para las tarjetas de resumen
+        initializeMiniCharts(isDark, backgroundColor);
+        
+        // Gráfica de barras - Ventas Mensuales
+        const salesChartCtx = document.getElementById('salesChart');
+        if (salesChartCtx) {
+            const salesChart = new Chart(salesChartCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Junio', 'Julio', 'Agosto', 'Septiembre'],
+                    datasets: [{
+                        label: 'Ventas ($)',
+                        data: [12450, 9870, 15680, 18920],
+                        backgroundColor: [
+                            'rgba(99, 102, 241, 0.8)',
+                            'rgba(99, 102, 241, 0.7)',
+                            'rgba(99, 102, 241, 0.9)',
+                            'rgba(99, 102, 241, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(99, 102, 241, 1)',
+                            'rgba(99, 102, 241, 1)',
+                            'rgba(99, 102, 241, 1)',
+                            'rgba(99, 102, 241, 1)'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        borderSkipped: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: backgroundColor,
+                            titleColor: textColor,
+                            bodyColor: textColor,
+                            borderColor: gridColor,
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return `Ventas: $${context.parsed.y.toLocaleString()}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: gridColor,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: textColor,
+                                font: {
+                                    size: 12
+                                },
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: textColor,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeOutQuart'
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+            
+            // Guardar referencia para actualización de tema
+            window.salesChart = salesChart;
+        }
+        
+        // Gráfica de línea - Tendencia de Ventas
+        const trendChartCtx = document.getElementById('trendChart');
+        if (trendChartCtx) {
+            const trendChart = new Chart(trendChartCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep'],
+                    datasets: [{
+                        label: 'Ventas Mensuales',
+                        data: [8500, 9200, 10500, 11800, 13200, 12450, 9870, 15680, 18920],
+                        borderColor: 'rgba(16, 185, 129, 1)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgba(16, 185, 129, 1)',
+                        pointBorderColor: backgroundColor,
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: backgroundColor,
+                            titleColor: textColor,
+                            bodyColor: textColor,
+                            borderColor: gridColor,
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return `Ventas: $${context.parsed.y.toLocaleString()}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: gridColor,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: textColor,
+                                font: {
+                                    size: 12
+                                },
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: gridColor,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: textColor,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeOutQuart'
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+            
+            // Guardar referencia para actualización de tema
+            window.trendChart = trendChart;
+        }
+        
+        console.log('Gráficas inicializadas correctamente');
+    }
+    
+    // Función para inicializar las mini-gráficas de las tarjetas
+    function initializeMiniCharts(isDark, backgroundColor) {
+        console.log('Inicializando mini-gráficas...');
+        
+        // Configuración común para mini-gráficas
+        const miniChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { enabled: false }
+            },
+            scales: {
+                x: { display: false },
+                y: { display: false }
+            },
+            elements: {
+                point: { radius: 0 },
+                line: { borderWidth: 2 }
+            },
+            animation: {
+                duration: 1500,
+                easing: 'easeOutQuart'
+            }
+        };
+        
+        // Mini-gráfica 1: Total Productos - Línea ascendente
+        const totalProductsCtx = document.getElementById('totalProductsChart');
+        if (totalProductsCtx) {
+            window.totalProductsChart = new Chart(totalProductsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+                    datasets: [{
+                        data: [980, 1050, 1120, 1180, 1240, 1247],
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 2
+                    }]
+                },
+                options: miniChartOptions
+            });
+        }
+        
+        // Mini-gráfica 2: Valor Total - Línea ascendente
+        const totalValueCtx = document.getElementById('totalValueChart');
+        if (totalValueCtx) {
+            window.totalValueChart = new Chart(totalValueCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+                    datasets: [{
+                        data: [38000, 39500, 41000, 42500, 44000, 45230],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 2
+                    }]
+                },
+                options: miniChartOptions
+            });
+        }
+        
+        // Mini-gráfica 3: Stock Bajo - Línea descendente
+        const lowStockCtx = document.getElementById('lowStockChart');
+        if (lowStockCtx) {
+            window.lowStockChart = new Chart(lowStockCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+                    datasets: [{
+                        data: [35, 32, 28, 25, 24, 23],
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 2
+                    }]
+                },
+                options: miniChartOptions
+            });
+        }
+        
+        // Mini-gráfica 4: Ventas Mes - Línea ascendente
+        const monthlySalesCtx = document.getElementById('monthlySalesChart');
+        if (monthlySalesCtx) {
+            window.monthlySalesChart = new Chart(monthlySalesCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+                    datasets: [{
+                        data: [8500, 9200, 10500, 11800, 13200, 12450],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 2
+                    }]
+                },
+                options: miniChartOptions
+            });
+        }
+        
+        console.log('Mini-gráficas inicializadas correctamente');
+    }
+    
+    // Función para actualizar el tema de las gráficas
+    function updateChartsTheme() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const textColor = isDark ? '#ffffff' : '#0f172a';
+        const gridColor = isDark ? '#475569' : '#e2e8f0';
+        const backgroundColor = isDark ? '#1e293b' : '#ffffff';
+        
+        // Actualizar gráfica de ventas
+        if (window.salesChart) {
+            window.salesChart.options.scales.y.ticks.color = textColor;
+            window.salesChart.options.scales.x.ticks.color = textColor;
+            window.salesChart.options.scales.y.grid.color = gridColor;
+            window.salesChart.options.plugins.tooltip.backgroundColor = backgroundColor;
+            window.salesChart.options.plugins.tooltip.titleColor = textColor;
+            window.salesChart.options.plugins.tooltip.bodyColor = textColor;
+            window.salesChart.options.plugins.tooltip.borderColor = gridColor;
+            window.salesChart.update();
+        }
+        
+        // Actualizar gráfica de tendencia
+        if (window.trendChart) {
+            window.trendChart.options.scales.y.ticks.color = textColor;
+            window.trendChart.options.scales.x.ticks.color = textColor;
+            window.trendChart.options.scales.y.grid.color = gridColor;
+            window.trendChart.options.scales.x.grid.color = gridColor;
+            window.trendChart.options.plugins.tooltip.backgroundColor = backgroundColor;
+            window.trendChart.options.plugins.tooltip.titleColor = textColor;
+            window.trendChart.options.plugins.tooltip.bodyColor = textColor;
+            window.trendChart.options.plugins.tooltip.borderColor = gridColor;
+            window.trendChart.update();
+        }
+        
+        // Actualizar mini-gráficas
+        updateMiniChartsTheme(isDark, backgroundColor);
+    }
+    
+    // Función para actualizar el tema de las mini-gráficas
+    function updateMiniChartsTheme(isDark, backgroundColor) {
+        // Actualizar mini-gráfica de Total Productos
+        if (window.totalProductsChart) {
+            window.totalProductsChart.options.plugins.tooltip.backgroundColor = backgroundColor;
+            window.totalProductsChart.update();
+        }
+        
+        // Actualizar mini-gráfica de Valor Total
+        if (window.totalValueChart) {
+            window.totalValueChart.options.plugins.tooltip.backgroundColor = backgroundColor;
+            window.totalValueChart.update();
+        }
+        
+        // Actualizar mini-gráfica de Stock Bajo
+        if (window.lowStockChart) {
+            window.lowStockChart.options.plugins.tooltip.backgroundColor = backgroundColor;
+            window.lowStockChart.update();
+        }
+        
+        // Actualizar mini-gráfica de Ventas Mes
+        if (window.monthlySalesChart) {
+            window.monthlySalesChart.options.plugins.tooltip.backgroundColor = backgroundColor;
+            window.monthlySalesChart.update();
+        }
+    }
+    
     // Inicializar dashboard cuando el DOM esté listo
     try {
         initializeDashboard();
+        initializeCharts();
         handleErrors();
         enhanceAccessibility();
         
