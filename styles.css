@@ -127,7 +127,7 @@ body {
 /* Sidebar */
 .sidebar {
     grid-area: sidebar;
-    background: linear-gradient(135deg, var(--bg-sidebar) 0%, var(--gray-900) 100%);
+    background: var(--bg-sidebar);
     color: var(--text-inverse);
     padding: var(--spacing-6);
     display: flex;
@@ -140,13 +140,13 @@ body {
 
 /* Sidebar en modo oscuro */
 [data-theme="dark"] .sidebar {
-    background: linear-gradient(135deg, var(--bg-sidebar) 0%, var(--gray-900) 100%);
-    color: var(--text-inverse);
+    background: var(--bg-sidebar);
+    color: var(--white);
 }
 
 /* Sidebar en modo claro */
 [data-theme="light"] .sidebar {
-    background: linear-gradient(135deg, var(--bg-sidebar) 0%, var(--gray-900) 100%);
+    background: var(--bg-sidebar);
     color: var(--text-inverse);
 }
 
@@ -387,7 +387,7 @@ body {
 /* Área de contenido */
 .content-area {
     flex: 1;
-    padding: var(--spacing-8);
+    padding: 2rem;
     display: flex;
     flex-direction: column;
     gap: var(--spacing-8);
@@ -423,10 +423,216 @@ body {
     }
 }
 
+.summary-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 40%;
+    padding-right: var(--spacing-2);
+    z-index: 2;
+}
+
 .summary-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-xl);
     border-color: var(--primary-light);
+}
+
+/* Gráficas pequeñas en las tarjetas */
+.card-mini-chart {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60%;
+    height: 100%;
+    opacity: 0.9;
+    transition: opacity var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+    border-radius: 0 var(--border-radius-xl) var(--border-radius-xl) 0;
+    display: flex;
+    align-items: end;
+    justify-content: space-around;
+    gap: 3px;
+    padding: var(--spacing-4);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+}
+
+.summary-card:hover .card-mini-chart {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.02);
+}
+
+/* Histograma para tendencia positiva */
+.mini-chart-positive {
+    animation: miniChartGrow 1.2s ease-out;
+}
+
+.mini-chart-positive::before,
+.mini-chart-positive::after {
+    content: '';
+    background: var(--success-color);
+    border-radius: 1px;
+    animation: barGrowUp 1.2s ease-out;
+}
+
+.mini-chart-positive::before {
+    width: 3px;
+    height: 60%;
+    animation-delay: 0.1s;
+}
+
+.mini-chart-positive::after {
+    width: 3px;
+    height: 80%;
+    animation-delay: 0.3s;
+}
+
+/* Histograma para tendencia negativa */
+.mini-chart-negative {
+    animation: miniChartGrow 1.2s ease-out;
+}
+
+.mini-chart-negative::before,
+.mini-chart-negative::after {
+    content: '';
+    background: var(--danger-color);
+    border-radius: 1px;
+    animation: barGrowDown 1.2s ease-out;
+}
+
+.mini-chart-negative::before {
+    width: 3px;
+    height: 40%;
+    animation-delay: 0.1s;
+}
+
+.mini-chart-negative::after {
+    width: 3px;
+    height: 25%;
+    animation-delay: 0.3s;
+}
+
+/* Histograma para tendencia estable */
+.mini-chart-stable {
+    animation: miniChartGrow 1.2s ease-out;
+}
+
+.mini-chart-stable::before,
+.mini-chart-stable::after {
+    content: '';
+    background: var(--info-color);
+    border-radius: 1px;
+    animation: barGrowStable 1.2s ease-out;
+}
+
+.mini-chart-stable::before {
+    width: 3px;
+    height: 50%;
+    animation-delay: 0.1s;
+}
+
+.mini-chart-stable::after {
+    width: 3px;
+    height: 50%;
+    animation-delay: 0.3s;
+}
+
+/* Añadir más barras para histogramas más realistas */
+.mini-chart-positive::after {
+    content: '';
+    position: relative;
+}
+
+.mini-chart-positive::after {
+    content: '';
+    position: relative;
+}
+
+/* Crear múltiples barras usando pseudo-elementos adicionales */
+.mini-chart-positive {
+    background: 
+        linear-gradient(to top, var(--success-color) 0%, var(--success-color) 60%, transparent 60%),
+        linear-gradient(to top, var(--success-color) 0%, var(--success-color) 80%, transparent 80%),
+        linear-gradient(to top, var(--success-color) 0%, var(--success-color) 70%, transparent 70%),
+        linear-gradient(to top, var(--success-color) 0%, var(--success-color) 90%, transparent 90%),
+        linear-gradient(to top, var(--success-color) 0%, var(--success-color) 50%, transparent 50%);
+    background-size: 8% 100%, 8% 100%, 8% 100%, 8% 100%, 8% 100%;
+    background-position: 10% 0%, 30% 0%, 50% 0%, 70% 0%, 90% 0%;
+    background-repeat: no-repeat;
+}
+
+.mini-chart-negative {
+    background: 
+        linear-gradient(to top, var(--danger-color) 0%, var(--danger-color) 40%, transparent 40%),
+        linear-gradient(to top, var(--danger-color) 0%, var(--danger-color) 25%, transparent 25%),
+        linear-gradient(to top, var(--danger-color) 0%, var(--danger-color) 35%, transparent 35%),
+        linear-gradient(to top, var(--danger-color) 0%, var(--danger-color) 20%, transparent 20%),
+        linear-gradient(to top, var(--danger-color) 0%, var(--danger-color) 30%, transparent 30%);
+    background-size: 8% 100%, 8% 100%, 8% 100%, 8% 100%, 8% 100%;
+    background-position: 10% 0%, 30% 0%, 50% 0%, 70% 0%, 90% 0%;
+    background-repeat: no-repeat;
+}
+
+.mini-chart-stable {
+    background: 
+        linear-gradient(to top, var(--info-color) 0%, var(--info-color) 50%, transparent 50%),
+        linear-gradient(to top, var(--info-color) 0%, var(--info-color) 50%, transparent 50%),
+        linear-gradient(to top, var(--info-color) 0%, var(--info-color) 50%, transparent 50%),
+        linear-gradient(to top, var(--info-color) 0%, var(--info-color) 50%, transparent 50%),
+        linear-gradient(to top, var(--info-color) 0%, var(--info-color) 50%, transparent 50%);
+    background-size: 8% 100%, 8% 100%, 8% 100%, 8% 100%, 8% 100%;
+    background-position: 10% 0%, 30% 0%, 50% 0%, 70% 0%, 90% 0%;
+    background-repeat: no-repeat;
+}
+
+@keyframes miniChartGrow {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    100% {
+        opacity: 0.9;
+        transform: scale(1);
+    }
+}
+
+@keyframes barGrowUp {
+    0% {
+        height: 0%;
+        opacity: 0;
+    }
+    100% {
+        height: var(--bar-height, 100%);
+        opacity: 1;
+    }
+}
+
+@keyframes barGrowDown {
+    0% {
+        height: 0%;
+        opacity: 0;
+    }
+    100% {
+        height: var(--bar-height, 100%);
+        opacity: 1;
+    }
+}
+
+@keyframes barGrowStable {
+    0% {
+        height: 0%;
+        opacity: 0;
+    }
+    100% {
+        height: var(--bar-height, 100%);
+        opacity: 1;
+    }
 }
 
 .card-icon {
@@ -556,48 +762,70 @@ body {
     padding: var(--spacing-6);
     min-height: 300px;
     display: flex;
-    align-items: end;
+    align-items: center;
     justify-content: center;
+    position: relative;
+    padding-bottom: var(--spacing-10);
 }
 
 .chart-bars {
     display: flex;
     align-items: end;
-    gap: var(--spacing-8);
+    justify-content: space-around;
+    gap: var(--spacing-6);
     height: 200px;
     width: 100%;
+    position: relative;
+    padding-bottom: 50px; /* Espacio para las etiquetas */
 }
 
 .chart-bar {
     background: linear-gradient(to top, var(--primary-color), var(--primary-light));
     border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
-    min-width: 60px;
+    width: 50px;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     transition: all var(--transition-normal);
-    animation: barGrow 1.2s ease-out;
+    animation: barGrow 1.5s ease-out;
     animation-fill-mode: both;
+    box-shadow: var(--shadow-md);
 }
 
-.chart-bar:nth-child(1) { animation-delay: 0.1s; }
-.chart-bar:nth-child(2) { animation-delay: 0.3s; }
-.chart-bar:nth-child(3) { animation-delay: 0.5s; }
-.chart-bar:nth-child(4) { animation-delay: 0.7s; }
-.chart-bar:nth-child(5) { animation-delay: 0.9s; }
+/* Alturas específicas para cada barra */
+.chart-bar:nth-child(1) { 
+    height: 60%; 
+    animation-delay: 0.1s; 
+}
+.chart-bar:nth-child(2) { 
+    height: 80%; 
+    animation-delay: 0.3s; 
+}
+.chart-bar:nth-child(3) { 
+    height: 100%; 
+    animation-delay: 0.5s; 
+}
+.chart-bar:nth-child(4) { 
+    height: 70%; 
+    animation-delay: 0.7s; 
+}
+.chart-bar:nth-child(5) { 
+    height: 90%; 
+    animation-delay: 0.9s; 
+}
 
 @keyframes barGrow {
     0% {
-        height: 0%;
+        height: 0% !important;
         opacity: 0;
         transform: scaleY(0);
     }
     50% {
         opacity: 1;
+        transform: scaleY(0.5);
     }
     100% {
-        height: var(--bar-height, 100%);
         opacity: 1;
         transform: scaleY(1);
     }
@@ -606,23 +834,59 @@ body {
 .chart-bar:hover {
     transform: scale(1.05);
     box-shadow: var(--shadow-lg);
+    filter: brightness(1.1);
+}
+
+/* Línea de base del gráfico */
+.chart-bars::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gray-300);
+    border-radius: var(--border-radius-sm);
+}
+
+/* Eje Y del gráfico */
+.chart-bars::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    top: 0;
+    width: 2px;
+    background: var(--gray-300);
+    border-radius: var(--border-radius-sm);
 }
 
 .bar-label {
     position: absolute;
-    bottom: -30px;
-    font-size: var(--font-size-xs);
+    bottom: -40px;
+    font-size: var(--font-size-sm);
     color: var(--text-secondary);
     font-weight: 500;
     text-align: center;
+    width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    text-transform: capitalize;
+    letter-spacing: 0.5px;
 }
 
 .bar-value {
     position: absolute;
-    top: -25px;
+    top: -30px;
     font-size: var(--font-size-sm);
     font-weight: 600;
     color: var(--primary-color);
+    background: var(--bg-card);
+    padding: 2px 6px;
+    border-radius: var(--border-radius-sm);
+    box-shadow: var(--shadow-sm);
+    white-space: nowrap;
 }
 
 /* Tabla de datos */
@@ -855,11 +1119,38 @@ body {
     }
     
     .chart-bars {
-        gap: var(--spacing-4);
+        gap: var(--spacing-2);
+        padding-bottom: 30px;
     }
     
     .chart-bar {
-        min-width: 40px;
+        width: 35px;
+    }
+    
+    .bar-label {
+        font-size: 0.75rem;
+        bottom: -35px;
+    }
+    
+    .bar-value {
+        font-size: 0.75rem;
+        top: -25px;
+        padding: 1px 4px;
+    }
+    
+    /* Gráficas pequeñas en móvil */
+    .card-mini-chart {
+        width: 50%;
+        height: 100%;
+        top: 0;
+        right: 0;
+        background-size: 6% 100%, 6% 100%, 6% 100%, 6% 100%, 6% 100% !important;
+        background-position: 15% 0%, 35% 0%, 55% 0%, 75% 0%, 95% 0% !important;
+    }
+    
+    .card-content {
+        width: 50%;
+        padding-right: var(--spacing-1);
     }
     
     .data-table {
@@ -1051,6 +1342,31 @@ body {
     color: var(--primary-light);
 }
 
+/* Asegurar que todos los textos del sidebar en modo oscuro sean blancos */
+[data-theme="dark"] .logo {
+    color: var(--white);
+}
+
+[data-theme="dark"] .nav-link {
+    color: var(--white);
+}
+
+[data-theme="dark"] .nav-link:hover {
+    color: var(--white);
+}
+
+[data-theme="dark"] .nav-link.active {
+    color: var(--white);
+}
+
+[data-theme="dark"] .user-name {
+    color: var(--white);
+}
+
+[data-theme="dark"] .user-role {
+    color: var(--white);
+}
+
 [data-theme="dark"] .header {
     background-color: var(--bg-header);
     border-bottom-color: var(--gray-700);
@@ -1136,6 +1452,67 @@ body {
 
 [data-theme="dark"] .bar-value {
     color: var(--primary-light);
+    background: var(--bg-card);
+    border: 1px solid var(--gray-600);
+}
+
+[data-theme="dark"] .chart-bars::before,
+[data-theme="dark"] .chart-bars::after {
+    background: var(--gray-600);
+}
+
+[data-theme="dark"] .chart-bar {
+    box-shadow: var(--shadow-md);
+}
+
+[data-theme="dark"] .chart-bar:hover {
+    box-shadow: var(--shadow-lg);
+    filter: brightness(1.2);
+}
+
+/* Gráficas pequeñas en modo oscuro */
+[data-theme="dark"] .card-mini-chart {
+    opacity: 1;
+}
+
+[data-theme="dark"] .summary-card:hover .card-mini-chart {
+    opacity: 1;
+}
+
+[data-theme="dark"] .mini-chart-positive {
+    background: 
+        linear-gradient(to top, #34d399 0%, #34d399 60%, transparent 60%),
+        linear-gradient(to top, #34d399 0%, #34d399 80%, transparent 80%),
+        linear-gradient(to top, #34d399 0%, #34d399 70%, transparent 70%),
+        linear-gradient(to top, #34d399 0%, #34d399 90%, transparent 90%),
+        linear-gradient(to top, #34d399 0%, #34d399 50%, transparent 50%);
+    background-size: 8% 100%, 8% 100%, 8% 100%, 8% 100%, 8% 100%;
+    background-position: 10% 0%, 30% 0%, 50% 0%, 70% 0%, 90% 0%;
+    background-repeat: no-repeat;
+}
+
+[data-theme="dark"] .mini-chart-negative {
+    background: 
+        linear-gradient(to top, #f87171 0%, #f87171 40%, transparent 40%),
+        linear-gradient(to top, #f87171 0%, #f87171 25%, transparent 25%),
+        linear-gradient(to top, #f87171 0%, #f87171 35%, transparent 35%),
+        linear-gradient(to top, #f87171 0%, #f87171 20%, transparent 20%),
+        linear-gradient(to top, #f87171 0%, #f87171 30%, transparent 30%);
+    background-size: 8% 100%, 8% 100%, 8% 100%, 8% 100%, 8% 100%;
+    background-position: 10% 0%, 30% 0%, 50% 0%, 70% 0%, 90% 0%;
+    background-repeat: no-repeat;
+}
+
+[data-theme="dark"] .mini-chart-stable {
+    background: 
+        linear-gradient(to top, #60a5fa 0%, #60a5fa 50%, transparent 50%),
+        linear-gradient(to top, #60a5fa 0%, #60a5fa 50%, transparent 50%),
+        linear-gradient(to top, #60a5fa 0%, #60a5fa 50%, transparent 50%),
+        linear-gradient(to top, #60a5fa 0%, #60a5fa 50%, transparent 50%),
+        linear-gradient(to top, #60a5fa 0%, #60a5fa 50%, transparent 50%);
+    background-size: 8% 100%, 8% 100%, 8% 100%, 8% 100%, 8% 100%;
+    background-position: 10% 0%, 30% 0%, 50% 0%, 70% 0%, 90% 0%;
+    background-repeat: no-repeat;
 }
 
 [data-theme="dark"] .data-table th {
