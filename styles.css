@@ -1,3 +1,18 @@
+/* ===== SISTEMA DE BREAKPOINTS RESPONSIVOS ===== */
+/*
+ * Sistema unificado de breakpoints para el dashboard:
+ * 
+ * Desktop: > 1024px (sidebar completo, layout de 2 columnas)
+ * Tablet Grande: 901px - 1024px (sidebar 280px, layout optimizado)
+ * Tablet Pequeña: 769px - 900px (sidebar 260px, layout compacto)
+ * Móvil: ≤ 768px (sidebar overlay, layout de 1 columna)
+ * 
+ * Características especiales:
+ * - Landscape: Optimizaciones específicas para orientación horizontal
+ * - Hover effects: Diferentes según el tamaño de pantalla
+ * - Transiciones: Adaptadas a la capacidad del dispositivo
+ */
+
 /* Variables CSS y Custom Properties */
 :root {
     /* Colores principales */
@@ -54,8 +69,8 @@
     --font-size-xs: 0.75rem;
     --font-size-sm: 0.875rem;
     --font-size-base: 1rem;
-    --font-size-lg: 1.125rem;
-    --font-size-xl: 1.25rem;
+    --font-size-lg: 1rem;
+    --font-size-xl: 1rem;
     --font-size-2xl: 1rem;
     --font-size-3xl: 1.875rem;
     
@@ -594,12 +609,7 @@ body {
     transition: background-color var(--theme-transition), border-bottom-color var(--theme-transition);
 }
 
-.header-left h1 {
-    font-size: var(--font-size-3xl);
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: var(--spacing-1);
-}
+
 
 .page-subtitle {
     color: var(--text-secondary);
@@ -792,6 +802,7 @@ body {
     max-width: 100%;
     height: calc(100vh - 80px - 60px);
     overflow: hidden;
+    overflow-y: auto;
 }
 
 /* Tarjetas de resumen */
@@ -1224,6 +1235,76 @@ body {
 
 /* Breakpoint para tablets grandes */
 @media (max-width: 1024px) and (min-width: 901px) {
+    /* Hover effects específicos para tablet */
+    .summary-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .chart-card:hover,
+    .table-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .nav-link:hover {
+        background-color: var(--primary-100);
+        transform: translateX(4px);
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    /* Transiciones suaves para tablet */
+    .summary-card,
+    .chart-card,
+    .table-card,
+    .nav-link,
+    .btn {
+        transition: all var(--transition-normal);
+    }
+    
+    /* Layout principal optimizado para tablet */
+    .dashboard-container {
+        grid-template-columns: 280px 1fr;
+        gap: var(--spacing-4);
+    }
+    
+    /* Sidebar optimizado para tablet */
+    .sidebar {
+        width: 280px;
+        max-width: 280px;
+        padding: var(--spacing-4);
+    }
+    
+    .sidebar-header {
+        padding: var(--spacing-4);
+        margin-bottom: var(--spacing-6);
+    }
+    
+    .logo {
+        padding: var(--spacing-3);
+    }
+    
+    .logo-text {
+        font-size: var(--font-size-lg);
+    }
+    
+    /* Navegación optimizada para tablet */
+    .nav-link {
+        padding: var(--spacing-3) var(--spacing-4);
+        margin: var(--spacing-2) 0;
+        font-size: var(--font-size-base);
+    }
+    
+    .nav-link i {
+        font-size: var(--font-size-lg);
+        margin-right: var(--spacing-3);
+    }
+    
+    /* Dashboard grid optimizado para tablet */
     .dashboard-grid {
         grid-template-areas: 
             "chart1 chart2"
@@ -1232,39 +1313,372 @@ body {
         grid-template-rows: auto auto;
         gap: var(--spacing-4);
         height: auto;
+        padding: var(--spacing-4);
     }
     
+    /* Tarjetas de resumen optimizadas para tablet */
     .summary-cards {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
         gap: var(--spacing-4);
-        height: 180px;
+        height: 200px;
+        margin-bottom: var(--spacing-6);
     }
     
+    .summary-card {
+        height: 200px;
+        min-height: 200px;
+        padding: var(--spacing-4);
+    }
+    
+    .card-title {
+        font-size: var(--font-size-base);
+        margin-bottom: var(--spacing-2);
+    }
+    
+    .card-value {
+        font-size: var(--font-size-2xl);
+        margin-bottom: var(--spacing-2);
+    }
+    
+    .card-change {
+        font-size: var(--font-size-sm);
+    }
+    
+    /* Gráficas optimizadas para tablet */
     .chart-item .chart-card,
     .table-item .table-card {
-        min-height: 320px;
+        min-height: 350px;
+        padding: var(--spacing-4);
+    }
+    
+    .chart-container {
+        height: 280px;
+    }
+    
+    /* Header optimizado para tablet */
+    .header {
+        padding: var(--spacing-4) var(--spacing-6);
+        margin-bottom: var(--spacing-4);
+    }
+    
+    .page-title {
+        font-size: var(--font-size-2xl);
+    }
+    
+    .page-subtitle {
+        font-size: var(--font-size-base);
+    }
+    
+    /* Botones optimizados para tablet */
+    .header-actions {
+        gap: var(--spacing-3);
+    }
+    
+    .btn {
+        padding: var(--spacing-3) var(--spacing-4);
+        font-size: var(--font-size-base);
+    }
+    
+    /* Tabla optimizada para tablet */
+    .table-wrapper {
+        max-height: 400px;
+    }
+    
+    .data-table th,
+    .data-table td {
+        padding: var(--spacing-3) var(--spacing-4);
+        font-size: var(--font-size-sm);
+    }
+    
+    /* Footer optimizado para tablet */
+    .footer {
+        padding: var(--spacing-4) var(--spacing-6);
+        margin-top: var(--spacing-6);
+    }
+    
+    /* Ocultar botón hamburguesa en tablet */
+    .mobile-hamburger {
+        display: none !important;
+    }
+    
+    /* Mostrar botón de menú normal en tablet */
+    .mobile-menu-btn {
+        display: flex !important;
+    }
+    
+    /* Botón añadir producto del sidebar oculto en tablet */
+    .mobile-add-product {
+        display: none !important;
     }
 }
 
 /* Breakpoint para tablets pequeñas */
-@media (max-width: 900px) {
+@media (max-width: 900px) and (min-width: 769px) {
+    /* Hover effects específicos para tablet pequeña */
+    .summary-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .chart-card:hover,
+    .table-card:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .nav-link:hover {
+        background-color: var(--primary-50);
+        transform: translateX(2px);
+    }
+    
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-sm);
+    }
+    
+    /* Transiciones suaves para tablet pequeña */
+    .summary-card,
+    .chart-card,
+    .table-card,
+    .nav-link,
+    .btn {
+        transition: all var(--transition-fast);
+    }
+    
+    /* Layout principal optimizado para tablet pequeña */
+    /* Layout principal optimizado para tablet pequeña */
+    .dashboard-container {
+        grid-template-columns: 260px 1fr;
+        gap: var(--spacing-3);
+    }
+    
+    /* Sidebar optimizado para tablet pequeña */
+    .sidebar {
+        width: 260px;
+        max-width: 260px;
+        padding: var(--spacing-3);
+    }
+    
+    .sidebar-header {
+        padding: var(--spacing-3);
+        margin-bottom: var(--spacing-5);
+    }
+    
+    .logo {
+        padding: var(--spacing-2);
+    }
+    
+    .logo-text {
+        font-size: var(--font-size-base);
+    }
+    
+    /* Navegación optimizada para tablet pequeña */
+    .nav-link {
+        padding: var(--spacing-2) var(--spacing-3);
+        margin: var(--spacing-1) 0;
+        font-size: var(--font-size-sm);
+    }
+    
+    .nav-link i {
+        font-size: var(--font-size-base);
+        margin-right: var(--spacing-2);
+    }
+    
+    /* Dashboard grid optimizado para tablet pequeña */
     .dashboard-grid {
         grid-template-areas: 
             "chart1"
             "chart2"
             "table";
         grid-template-columns: 1fr;
-        gap: var(--spacing-4);
+        gap: var(--spacing-3);
     }
     
+    /* Tarjetas de resumen optimizadas para tablet pequeña */
     .summary-cards {
         grid-template-columns: repeat(2, 1fr);
-        gap: var(--spacing-4);
+        gap: var(--spacing-3);
+        height: 160px;
+        margin-bottom: var(--spacing-4);
     }
     
     .summary-card {
-        height: 180px;
-        min-height: 180px;
+        height: 160px;
+        min-height: 160px;
+        padding: var(--spacing-3);
+    }
+    
+    .card-title {
+        font-size: var(--font-size-sm);
+        margin-bottom: var(--spacing-1);
+    }
+    
+    .card-value {
+        font-size: var(--font-size-xl);
+        margin-bottom: var(--spacing-1);
+    }
+    
+    .card-change {
+        top: 95%!important;
+        font-size: var(--font-size-xs);
+    }
+    
+    /* Gráficas optimizadas para tablet pequeña */
+    .chart-item .chart-card,
+    .table-item .table-card {
+        min-height: 300px;
+        padding: var(--spacing-3);
+    }
+    
+    .chart-container {
+        height: 240px;
+    }
+    
+    /* Header optimizado para tablet pequeña */
+    .header {
+        padding: var(--spacing-3) var(--spacing-4);
+        margin-bottom: var(--spacing-3);
+    }
+    
+    .page-title {
+        font-size: var(--font-size-xl);
+    }
+    
+    .page-subtitle {
+        font-size: var(--font-size-sm);
+    }
+    
+    /* Botones optimizados para tablet pequeña */
+    .header-actions {
+        gap: var(--spacing-2);
+    }
+    
+    .btn {
+        padding: var(--spacing-2) var(--spacing-3);
+        font-size: var(--font-size-sm);
+    }
+    
+    /* Tabla optimizada para tablet pequeña */
+    .table-wrapper {
+        max-height: 350px;
+    }
+    
+    .data-table th,
+    .data-table td {
+        padding: var(--spacing-2) var(--spacing-3);
+        font-size: var(--font-size-xs);
+    }
+    
+    /* Footer optimizado para tablet pequeña */
+    .footer {
+        padding: var(--spacing-3) var(--spacing-4);
+        margin-top: var(--spacing-4);
+    }
+    
+    /* Ocultar botón hamburguesa en tablet pequeña */
+    .mobile-hamburger {
+        display: none !important;
+    }
+    
+    /* Mostrar botón de menú normal en tablet pequeña */
+    .mobile-menu-btn {
+        display: flex !important;
+    }
+    
+    /* Botón añadir producto del sidebar oculto en tablet pequeña */
+    .mobile-add-product {
+        display: none !important;
+    }
+    
+    /* Ajustes específicos para tablet pequeña */
+    .card-mini-chart {
+        height: 100%;
+        width: 70%;
+    }
+    
+    .card-icon {
+        width: 40px;
+        height: 40px;
+        font-size: var(--font-size-lg);
+    }
+}
+
+/* Breakpoint para tablets en modo landscape */
+@media (max-width: 1024px) and (min-width: 901px) and (orientation: landscape) {
+    /* Optimizaciones para tablet en landscape */
+    .dashboard-container {
+        grid-template-columns: 300px 1fr;
+        gap: var(--spacing-5);
+    }
+    
+    .sidebar {
+        width: 300px;
+        max-width: 300px;
+    }
+    
+    .summary-cards {
+        grid-template-columns: repeat(4, 1fr);
+        height: 160px;
+    }
+    
+    .summary-card {
+        height: 160px;
+        min-height: 160px;
+    }
+    
+    .dashboard-grid {
+        grid-template-areas: 
+            "chart1 chart2"
+            "table table";
+        gap: var(--spacing-5);
+    }
+    
+    .chart-container {
+        height: 300px;
+    }
+    
+    .table-wrapper {
+        max-height: 350px;
+    }
+}
+
+/* Breakpoint para tablets pequeñas en modo landscape */
+@media (max-width: 900px) and (min-width: 769px) and (orientation: landscape) {
+    /* Optimizaciones para tablet pequeña en landscape */
+    .dashboard-container {
+        grid-template-columns: 280px 1fr;
+        gap: var(--spacing-4);
+    }
+    
+    .sidebar {
+        width: 280px;
+        max-width: 280px;
+    }
+    
+    .summary-cards {
+        grid-template-columns: repeat(4, 1fr);
+        height: 140px;
+    }
+    
+    .summary-card {
+        height: 140px;
+        min-height: 140px;
+    }
+    
+    .dashboard-grid {
+        grid-template-areas: 
+            "chart1 chart2"
+            "table table";
+        gap: var(--spacing-4);
+        height: 100%;
+    }
+    
+    .chart-container {
+        height: 260px;
+    }
+    
+    .table-wrapper {
+        max-height: 300px;
     }
 }
 
@@ -2163,11 +2577,13 @@ body {
             "table table";
         grid-template-columns: 1fr 1fr;
         gap: var(--spacing-4);
+        height: 65%;
     }
     
     .summary-cards {
         grid-template-columns: repeat(2, 1fr);
         gap: var(--spacing-4);
+        height: 35%;
     }
     
     .summary-card {
