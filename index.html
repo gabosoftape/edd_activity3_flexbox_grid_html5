@@ -11,16 +11,19 @@
 </head>
 <body>
     <div class="dashboard-container">
+        <!-- Overlay para móvil -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+        
+        <!-- Área de detección de gesto para móvil -->
+        <div class="sidebar-gesture-area" id="sidebar-gesture-area" aria-label="Área de gesto para abrir sidebar"></div>
+        
         <!-- Sidebar de Navegación -->
         <aside class="sidebar" role="navigation" aria-label="Navegación principal">
             <div class="sidebar-header">
-                <div class="logo">
-                    <i class="fas fa-boxes"></i>
+                <div class="logo" id="logo-toggle" role="button" tabindex="0" aria-label="Alternar sidebar" aria-expanded="true">
+                    <i class="fas fa-chevron-left"></i>
                     <span class="logo-text">InventarioPro</span>
                 </div>
-                <button class="sidebar-toggle" aria-label="Alternar sidebar" aria-expanded="true">
-                    <i class="fas fa-bars"></i>
-                </button>
             </div>
             
             <nav class="sidebar-nav">

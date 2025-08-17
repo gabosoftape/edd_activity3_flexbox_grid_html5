@@ -5,17 +5,28 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Dashboard cargado correctamente');
     
     // Elementos del DOM
-    const sidebarToggle = document.querySelector('.sidebar-toggle');
+    const logoToggle = document.getElementById('logo-toggle');
     const sidebar = document.querySelector('.sidebar');
     const dashboardContainer = document.querySelector('.dashboard-container');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+    const sidebarGestureArea = document.getElementById('sidebar-gesture-area');
     const navLinks = document.querySelectorAll('.nav-link');
     const summaryCards = document.querySelectorAll('.summary-card');
     
     // Estado del sidebar
     let sidebarCollapsed = false;
     
+    // Variables para detección de gesto
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+    let isGestureActive = false;
+    
     // Función para alternar el sidebar
     function toggleSidebar() {
+        const isMobile = window.innerWidth <= 768;
+        
         if (sidebarCollapsed) {
             // Expandir sidebar
             sidebar.classList.remove('active');
@@ -23,11 +34,27 @@ document.addEventListener('DOMContentLoaded', function() {
             sidebarCollapsed = false;
             
             // Actualizar aria-expanded
-            sidebarToggle.setAttribute('aria-expanded', 'true');
+            logoToggle.setAttribute('aria-expanded', 'true');
             
             // Mostrar elementos del sidebar
             const hiddenElements = sidebar.querySelectorAll('.logo-text, .nav-link span, .user-details');
             hiddenElements.forEach(el => el.style.display = 'block');
+            
+            // Cambiar icono del botón
+            const icon = logoToggle.querySelector('i');
+            if (icon) {
+                icon.className = 'fas fa-chevron-left';
+            }
+            
+            // Ocultar overlay en móvil
+            if (isMobile && sidebarOverlay) {
+                sidebarOverlay.classList.remove('active');
+            }
+            
+            // En móvil, agregar margin-left para empujar el contenido
+            if (isMobile) {
+                dashboardContainer.classList.add('sidebar-active');
+            }
             
         } else {
             // Colapsar sidebar
@@ -36,17 +63,134 @@ document.addEventListener('DOMContentLoaded', function() {
             sidebarCollapsed = true;
             
             // Actualizar aria-expanded
-            sidebarToggle.setAttribute('aria-expanded', 'false');
+            logoToggle.setAttribute('aria-expanded', 'false');
             
             // Ocultar elementos del sidebar
             const hiddenElements = sidebar.querySelectorAll('.logo-text, .nav-link span, .user-details');
             hiddenElements.forEach(el => el.style.display = 'none');
+            
+            // Cambiar icono del botón
+            const icon = logoToggle.querySelector('i');
+            if (icon) {
+                icon.className = 'fas fa-chevron-right';
+            }
+            
+            // Mostrar overlay en móvil
+            if (isMobile && sidebarOverlay) {
+                sidebarOverlay.classList.add('active');
+            }
+            
+            // En móvil, remover margin-left para que el contenido ocupe toda la pantalla
+            if (isMobile) {
+                dashboardContainer.classList.remove('sidebar-active');
+            }
         }
     }
     
-    // Event listener para el botón de toggle del sidebar
-    if (sidebarToggle) {
-        sidebarToggle.addEventListener('click', toggleSidebar);
+    // Event listener para el logo toggle del sidebar
+    if (logoToggle) {
+        logoToggle.addEventListener('click', toggleSidebar);
+        logoToggle.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleSidebar();
+            }
+        });
+    }
+    
+    // Event listener para cerrar sidebar al hacer click en el overlay (móvil)
+    if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', function() {
+            if (window.innerWidth <= 768 && sidebarCollapsed) {
+                toggleSidebar();
+            }
+        });
+    }
+    
+    // Función para detectar gesto de swipe
+    function handleGesture() {
+        if (window.innerWidth > 768) return; // Solo en móvil
+        
+        const minSwipeDistance = 50;
+        const swipeDistance = touchEndX - touchStartX;
+        const verticalDistance = Math.abs(touchEndY - touchStartY);
+        
+        // Verificar que el swipe sea horizontal y suficientemente largo
+        if (Math.abs(swipeDistance) > minSwipeDistance && verticalDistance < 100) {
+            if (swipeDistance > 0) {
+                // Swipe hacia la derecha - abrir sidebar
+                if (sidebarCollapsed) {
+                    toggleSidebar();
+                }
+            } else {
+                // Swipe hacia la izquierda - cerrar sidebar
+                if (!sidebarCollapsed) {
+                    toggleSidebar();
+                }
+            }
+        }
+    }
+    
+    // Event listeners para detección de gesto
+    if (sidebarGestureArea) {
+        // Touch events para móvil
+        sidebarGestureArea.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            isGestureActive = true;
+        });
+        
+        sidebarGestureArea.addEventListener('touchmove', function(e) {
+            if (!isGestureActive) return;
+            touchEndX = e.touches[0].clientX;
+            touchEndY = e.touches[0].clientY;
+        });
+        
+        sidebarGestureArea.addEventListener('touchend', function(e) {
+            if (!isGestureActive) return;
+            handleGesture();
+            isGestureActive = false;
+        });
+        
+        // Mouse events para desktop (testing)
+        sidebarGestureArea.addEventListener('mousedown', function(e) {
+            touchStartX = e.clientX;
+            touchStartY = e.clientY;
+            isGestureActive = true;
+        });
+        
+        sidebarGestureArea.addEventListener('mousemove', function(e) {
+            if (!isGestureActive) return;
+            touchEndX = e.clientX;
+            touchEndY = e.clientY;
+        });
+        
+        sidebarGestureArea.addEventListener('mouseup', function(e) {
+            if (!isGestureActive) return;
+            handleGesture();
+            isGestureActive = false;
+        });
+        
+        // Detección de gesto en toda la pantalla para cerrar sidebar
+        document.addEventListener('touchstart', function(e) {
+            if (window.innerWidth <= 768 && !sidebarCollapsed) {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                isGestureActive = true;
+            }
+        });
+        
+        document.addEventListener('touchmove', function(e) {
+            if (!isGestureActive || window.innerWidth > 768 || sidebarCollapsed) return;
+            touchEndX = e.touches[0].clientX;
+            touchEndY = e.touches[0].clientY;
+        });
+        
+        document.addEventListener('touchend', function(e) {
+            if (!isGestureActive || window.innerWidth > 768 || sidebarCollapsed) return;
+            handleGesture();
+            isGestureActive = false;
+        });
     }
     
     // Función para manejar la navegación activa
@@ -355,16 +499,68 @@ document.addEventListener('DOMContentLoaded', function() {
         function checkScreenSize() {
             const isMobile = window.innerWidth <= 768;
             const isTablet = window.innerWidth <= 1024 && window.innerWidth > 768;
+            const isDesktop = window.innerWidth > 1024;
             
             if (isMobile) {
                 document.body.classList.add('mobile-view');
                 document.body.classList.remove('tablet-view', 'desktop-view');
+                
+                // En móvil, asegurar que el sidebar esté cerrado por defecto
+                if (!sidebarCollapsed) {
+                    sidebar.classList.add('active');
+                    dashboardContainer.classList.add('sidebar-collapsed');
+                    sidebarCollapsed = true;
+                    logoToggle.setAttribute('aria-expanded', 'false');
+                }
+                
+                // Asegurar que el contenido principal sea visible
+                dashboardContainer.style.gridTemplateAreas = '"main"';
+                dashboardContainer.style.gridTemplateColumns = '1fr';
+                
             } else if (isTablet) {
                 document.body.classList.add('tablet-view');
                 document.body.classList.remove('mobile-view', 'desktop-view');
+                
+                // En tablet, restaurar el sidebar normal
+                if (sidebarCollapsed) {
+                    sidebar.classList.remove('active');
+                    dashboardContainer.classList.remove('sidebar-collapsed');
+                    sidebarCollapsed = false;
+                    logoToggle.setAttribute('aria-expanded', 'true');
+                    
+                    // Mostrar elementos del sidebar
+                    const hiddenElements = sidebar.querySelectorAll('.logo-text, .nav-link span, .user-details');
+                    hiddenElements.forEach(el => el.style.display = 'block');
+                }
+                
+                // Restaurar layout de sidebar
+                dashboardContainer.style.gridTemplateAreas = '"sidebar main"';
+                dashboardContainer.style.gridTemplateColumns = 'var(--sidebar-width) 1fr';
+                
             } else {
                 document.body.classList.add('desktop-view');
                 document.body.classList.remove('mobile-view', 'tablet-view');
+                
+                // En desktop, restaurar el sidebar normal
+                if (sidebarCollapsed) {
+                    sidebar.classList.remove('active');
+                    dashboardContainer.classList.remove('sidebar-collapsed');
+                    sidebarCollapsed = false;
+                    logoToggle.setAttribute('aria-expanded', 'true');
+                    
+                    // Mostrar elementos del sidebar
+                    const hiddenElements = sidebar.querySelectorAll('.logo-text, .nav-link span, .user-details');
+                    hiddenElements.forEach(el => el.style.display = 'block');
+                }
+                
+                // Restaurar layout de sidebar
+                dashboardContainer.style.gridTemplateAreas = '"sidebar main"';
+                dashboardContainer.style.gridTemplateColumns = 'var(--sidebar-width) 1fr';
+            }
+            
+            // Ocultar overlay en desktop/tablet
+            if (sidebarOverlay && !isMobile) {
+                sidebarOverlay.classList.remove('active');
             }
         }
         
