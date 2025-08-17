@@ -23,22 +23,108 @@ document.addEventListener('DOMContentLoaded', function() {
     let touchEndY = 0;
     let isGestureActive = false;
     
+    // Función para forzar la visualización de elementos del sidebar en móvil
+    function forceShowSidebarElements() {
+        const logoText = sidebar.querySelector('.logo-text');
+        const navSpans = sidebar.querySelectorAll('.nav-link span');
+        const userDetails = sidebar.querySelector('.user-details');
+        const mobileAddBtn = sidebar.querySelector('.mobile-add-product');
+        
+        // Forzar visualización del logo
+        if (logoText) {
+            logoText.style.setProperty('display', 'block', 'important');
+            logoText.style.setProperty('visibility', 'visible', 'important');
+            logoText.style.setProperty('opacity', '1', 'important');
+            logoText.style.setProperty('transform', 'none', 'important');
+            logoText.style.setProperty('position', 'static', 'important');
+        }
+        
+        // Forzar visualización de los spans de navegación
+        navSpans.forEach(span => {
+            span.style.setProperty('display', 'inline', 'important');
+            span.style.setProperty('visibility', 'visible', 'important');
+            span.style.setProperty('opacity', '1', 'important');
+            span.style.setProperty('transform', 'none', 'important');
+            span.style.setProperty('position', 'static', 'important');
+        });
+        
+        // Forzar visualización de los detalles de usuario
+        if (userDetails) {
+            userDetails.style.setProperty('display', 'block', 'important');
+            userDetails.style.setProperty('visibility', 'visible', 'important');
+            userDetails.style.setProperty('opacity', '1', 'important');
+            userDetails.style.setProperty('transform', 'none', 'important');
+            userDetails.style.setProperty('position', 'static', 'important');
+        }
+        
+        // Forzar visualización del botón móvil
+        if (mobileAddBtn) {
+            mobileAddBtn.style.setProperty('display', 'block', 'important');
+            mobileAddBtn.style.setProperty('visibility', 'visible', 'important');
+            mobileAddBtn.style.setProperty('opacity', '1', 'important');
+        }
+        
+        console.log('Elementos del sidebar forzados a mostrar');
+    }
+    
     // Función para alternar el sidebar
     function toggleSidebar() {
         const isMobile = window.innerWidth <= 768;
+        console.log('toggleSidebar llamado');
+        console.log('isMobile:', isMobile);
+        console.log('sidebarCollapsed:', sidebarCollapsed);
         
         if (sidebarCollapsed) {
             // Expandir sidebar
-            sidebar.classList.remove('active');
-            dashboardContainer.classList.remove('sidebar-collapsed');
+            console.log('Expandir sidebar');
+            if (isMobile) {
+                // En móvil: mostrar sidebar como overlay
+                console.log('Mostrando sidebar en móvil');
+                sidebar.classList.add('active');
+                dashboardContainer.classList.add('sidebar-active');
+                if (sidebarOverlay) {
+                    sidebarOverlay.classList.add('active');
+                }
+                
+                // En móvil, mostrar todos los elementos del sidebar
+                const hiddenElements = sidebar.querySelectorAll('.logo-text, .nav-link span, .user-details');
+                hiddenElements.forEach(el => {
+                    el.style.display = 'block';
+                    el.style.visibility = 'visible';
+                    el.style.opacity = '1';
+                    el.style.transform = 'none';
+                    el.style.position = 'static';
+                });
+                
+                // Mostrar también el botón móvil
+                const mobileAddBtn = document.querySelector('.mobile-add-product');
+                if (mobileAddBtn) {
+                    mobileAddBtn.style.display = 'block';
+                    mobileAddBtn.style.visibility = 'visible';
+                    mobileAddBtn.style.opacity = '1';
+                }
+                
+                // Llamar a la función que fuerza la visualización de elementos
+                forceShowSidebarElements();
+                
+                // Agregar un pequeño delay para asegurar que los estilos se apliquen
+                setTimeout(() => {
+                    forceShowSidebarElements();
+                }, 100);
+            } else {
+                // En desktop: expandir sidebar normal
+                console.log('Expandir sidebar en desktop');
+                sidebar.classList.remove('active');
+                dashboardContainer.classList.remove('sidebar-collapsed');
+                
+                // En desktop, mostrar todos los elementos del sidebar
+                const hiddenElements = sidebar.querySelectorAll('.logo-text, .nav-link span, .user-details');
+                hiddenElements.forEach(el => el.style.display = 'block');
+            }
             sidebarCollapsed = false;
             
             // Actualizar aria-expanded
             logoToggle.setAttribute('aria-expanded', 'true');
-            
-            // Mostrar elementos del sidebar
-            const hiddenElements = sidebar.querySelectorAll('.logo-text, .nav-link span, .user-details');
-            hiddenElements.forEach(el => el.style.display = 'block');
             
             // Cambiar icono del botón
             const icon = logoToggle.querySelector('i');
@@ -46,20 +132,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 icon.className = 'fas fa-chevron-left';
             }
             
-            // Ocultar overlay en móvil
-            if (isMobile && sidebarOverlay) {
-                sidebarOverlay.classList.remove('active');
-            }
-            
-            // En móvil, agregar margin-left para empujar el contenido
-            if (isMobile) {
-                dashboardContainer.classList.add('sidebar-active');
-            }
-            
         } else {
             // Colapsar sidebar
-            sidebar.classList.add('active');
-            dashboardContainer.classList.add('sidebar-collapsed');
+            console.log('Colapsar sidebar');
+            if (isMobile) {
+                // En móvil: ocultar sidebar overlay
+                console.log('Ocultando sidebar en móvil');
+                sidebar.classList.remove('active');
+                dashboardContainer.classList.remove('sidebar-active');
+                if (sidebarOverlay) {
+                    sidebarOverlay.classList.remove('active');
+                }
+                
+                // Ocultar el botón móvil cuando se cierra
+                const mobileAddBtn = document.querySelector('.mobile-add-product');
+                if (mobileAddBtn) {
+                    mobileAddBtn.style.display = 'none';
+                }
+            } else {
+                // En desktop: colapsar sidebar normal
+                console.log('Colapsar sidebar en desktop');
+                sidebar.classList.add('active');
+                dashboardContainer.classList.add('sidebar-collapsed');
+            }
             sidebarCollapsed = true;
             
             // Actualizar aria-expanded
@@ -74,17 +169,42 @@ document.addEventListener('DOMContentLoaded', function() {
             if (icon) {
                 icon.className = 'fas fa-chevron-right';
             }
-            
-            // Mostrar overlay en móvil
-            if (isMobile && sidebarOverlay) {
-                sidebarOverlay.classList.add('active');
-            }
-            
-            // En móvil, remover margin-left para que el contenido ocupe toda la pantalla
-            if (isMobile) {
-                dashboardContainer.classList.remove('sidebar-active');
-            }
         }
+        
+        // Log final del estado
+        console.log('Estado final sidebarCollapsed:', sidebarCollapsed);
+        console.log('Clases del sidebar:', sidebar.className);
+        console.log('Clases del dashboardContainer:', dashboardContainer.className);
+        
+                        // Log adicional para debuggear elementos del sidebar
+                if (isMobile) {
+                    const logoText = sidebar.querySelector('.logo-text');
+                    const navSpans = sidebar.querySelectorAll('.nav-link span');
+                    const userDetails = sidebar.querySelector('.user-details');
+                    const mobileAddBtn = sidebar.querySelector('.mobile-add-product');
+                    
+                    console.log('Logo text display:', logoText ? logoText.style.display : 'No encontrado');
+                    console.log('Logo text visibility:', logoText ? logoText.style.visibility : 'No encontrado');
+                    console.log('Logo text opacity:', logoText ? logoText.style.opacity : 'No encontrado');
+                    console.log('Nav spans encontrados:', navSpans.length);
+                    navSpans.forEach((span, index) => {
+                        console.log(`Nav span ${index} display:`, span.style.display);
+                        console.log(`Nav span ${index} visibility:`, span.style.visibility);
+                        console.log(`Nav span ${index} opacity:`, span.style.opacity);
+                    });
+                    console.log('User details display:', userDetails ? userDetails.style.display : 'No encontrado');
+                    console.log('User details visibility:', userDetails ? userDetails.style.visibility : 'No encontrado');
+                    console.log('User details opacity:', userDetails ? userDetails.style.opacity : 'No encontrado');
+                    console.log('Mobile add button display:', mobileAddBtn ? mobileAddBtn.style.display : 'No encontrado');
+                    
+                    // Verificar también el computed style
+                    if (logoText) {
+                        const computedStyle = window.getComputedStyle(logoText);
+                        console.log('Logo text computed display:', computedStyle.display);
+                        console.log('Logo text computed visibility:', computedStyle.visibility);
+                        console.log('Logo text computed opacity:', computedStyle.opacity);
+                    }
+                }
     }
     
     // Event listener para el logo toggle del sidebar
@@ -98,11 +218,67 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Event listener para el botón hamburguesa móvil
+    const mobileHamburger = document.getElementById('mobile-hamburger');
+    if (mobileHamburger) {
+        mobileHamburger.addEventListener('click', function() {
+            console.log('Botón hamburguesa clickeado');
+            console.log('Estado actual sidebarCollapsed:', sidebarCollapsed);
+            console.log('Ancho de ventana:', window.innerWidth);
+            toggleSidebar();
+            
+            // Forzar visualización de elementos después de un pequeño delay
+            if (window.innerWidth <= 768) {
+                setTimeout(() => {
+                    forceShowSidebarElements();
+                }, 200);
+            }
+        });
+        mobileHamburger.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleSidebar();
+            }
+        });
+    }
+    
     // Event listener para cerrar sidebar al hacer click en el overlay (móvil)
     if (sidebarOverlay) {
         sidebarOverlay.addEventListener('click', function() {
             if (window.innerWidth <= 768 && sidebarCollapsed) {
                 toggleSidebar();
+            }
+        });
+    }
+    
+    // Event listener para asegurar que los elementos se muestren cuando el sidebar esté activo
+    sidebar.addEventListener('transitionend', function() {
+        if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
+            console.log('Transición del sidebar completada, forzando visualización de elementos');
+            forceShowSidebarElements();
+        }
+    });
+    
+    // Event listener para el botón Añadir Producto del sidebar móvil
+    const mobileAddBtn = document.querySelector('.mobile-add-btn');
+    if (mobileAddBtn) {
+        mobileAddBtn.addEventListener('click', function() {
+            console.log('Botón Añadir Producto del sidebar móvil clickeado');
+            
+            // Efecto visual
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+            
+            // Simular apertura de modal
+            showNotification('Modal de nuevo producto abierto desde sidebar móvil', 'success');
+            
+            // Cerrar sidebar en móvil después de la acción
+            if (window.innerWidth <= 768) {
+                setTimeout(() => {
+                    toggleSidebar();
+                }, 300);
             }
         });
     }
@@ -305,7 +481,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         notification.style.cssText = `
             position: fixed;
-            top: 20px;
+            bottom: 20px;
             right: 20px;
             background: ${bgColor};
             border: 1px solid ${borderColor};
@@ -506,16 +682,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.body.classList.remove('tablet-view', 'desktop-view');
                 
                 // En móvil, asegurar que el sidebar esté cerrado por defecto
-                if (!sidebarCollapsed) {
-                    sidebar.classList.add('active');
-                    dashboardContainer.classList.add('sidebar-collapsed');
-                    sidebarCollapsed = true;
-                    logoToggle.setAttribute('aria-expanded', 'false');
-                }
+                sidebar.classList.remove('active');
+                dashboardContainer.classList.remove('sidebar-active');
+                sidebarCollapsed = true;
+                logoToggle.setAttribute('aria-expanded', 'false');
+                
+                // En móvil, mantener los elementos del sidebar visibles para cuando se abra
+                // No los ocultamos porque queremos que se vean cuando el sidebar esté activo
                 
                 // Asegurar que el contenido principal sea visible
                 dashboardContainer.style.gridTemplateAreas = '"main"';
                 dashboardContainer.style.gridTemplateColumns = '1fr';
+                
+                // Ocultar overlay
+                if (sidebarOverlay) {
+                    sidebarOverlay.classList.remove('active');
+                }
+                
+                // Ocultar el botón móvil por defecto
+                const mobileAddBtn = document.querySelector('.mobile-add-product');
+                if (mobileAddBtn) {
+                    mobileAddBtn.style.display = 'none';
+                }
                 
             } else if (isTablet) {
                 document.body.classList.add('tablet-view');
