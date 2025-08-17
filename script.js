@@ -651,99 +651,221 @@ document.addEventListener('DOMContentLoaded', function() {
             maintainAspectRatio: false,
             plugins: {
                 legend: { display: false },
-                tooltip: { enabled: false }
+                tooltip: { 
+                    enabled: true,
+                    mode: 'index',
+                    intersect: false,
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleColor: '#ffffff',
+                    bodyColor: '#ffffff',
+                    borderColor: 'rgba(255, 255, 255, 0.2)',
+                    borderWidth: 1,
+                    cornerRadius: 8,
+                    displayColors: false,
+                    titleFont: { size: 12, weight: '600' },
+                    bodyFont: { size: 11 },
+                    padding: 8,
+                    callbacks: {
+                        title: function(context) {
+                            return context[0].label;
+                        },
+                        label: function(context) {
+                            return context.parsed.y.toLocaleString();
+                        }
+                    }
+                }
             },
             scales: {
                 x: { display: false },
                 y: { display: false }
             },
             elements: {
-                point: { radius: 0 },
+                point: { radius: 3 },
                 line: { borderWidth: 2 }
             },
             animation: {
                 duration: 1500,
                 easing: 'easeOutQuart'
+            },
+            interaction: {
+                mode: 'index',
+                intersect: false
             }
         };
         
-        // Mini-gráfica 1: Total Productos - Línea ascendente
+        // Mini-gráfica 1: Total Productos - Fluctuaciones realistas
         const totalProductsCtx = document.getElementById('totalProductsChart');
         if (totalProductsCtx) {
+            const totalProductsOptions = {
+                ...miniChartOptions,
+                plugins: {
+                    ...miniChartOptions.plugins,
+                    tooltip: {
+                        ...miniChartOptions.plugins.tooltip,
+                        callbacks: {
+                            title: function(context) {
+                                return context[0].label;
+                            },
+                            label: function(context) {
+                                const value = context.parsed.y;
+                                return `${value.toLocaleString()} productos`;
+                            }
+                        }
+                    }
+                }
+            };
+            
             window.totalProductsChart = new Chart(totalProductsCtx, {
                 type: 'line',
                 data: {
                     labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
                     datasets: [{
-                        data: [980, 1050, 1120, 1180, 1240, 1247],
+                        data: [980, 1020, 1080, 1050, 1120, 1247],
                         borderColor: '#6366f1',
-                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        backgroundColor: 'rgba(99, 102, 241, 0.3)',
                         fill: true,
-                        tension: 0.4,
-                        borderWidth: 2
+                        tension: 0.3,
+                        borderWidth: 2,
+                        pointBackgroundColor: '#6366f1',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 1,
+                        pointRadius: 3,
+                        pointHoverRadius: 4
                     }]
                 },
-                options: miniChartOptions
+                options: totalProductsOptions
             });
         }
         
-        // Mini-gráfica 2: Valor Total - Línea ascendente
+        // Mini-gráfica 2: Valor Total - Fluctuaciones realistas
         const totalValueCtx = document.getElementById('totalValueChart');
         if (totalValueCtx) {
+            const totalValueOptions = {
+                ...miniChartOptions,
+                plugins: {
+                    ...miniChartOptions.plugins,
+                    tooltip: {
+                        ...miniChartOptions.plugins.tooltip,
+                        callbacks: {
+                            title: function(context) {
+                                return context[0].label;
+                            },
+                            label: function(context) {
+                                const value = context.parsed.y;
+                                return `$${value.toLocaleString()}`;
+                            }
+                        }
+                    }
+                }
+            };
+            
             window.totalValueChart = new Chart(totalValueCtx, {
                 type: 'line',
                 data: {
                     labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
                     datasets: [{
-                        data: [38000, 39500, 41000, 42500, 44000, 45230],
+                        data: [38000, 36500, 39500, 41000, 39500, 45230],
                         borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.3)',
                         fill: true,
-                        tension: 0.4,
-                        borderWidth: 2
+                        tension: 0.3,
+                        borderWidth: 2,
+                        pointBackgroundColor: '#10b981',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 1,
+                        pointRadius: 3,
+                        pointHoverRadius: 4
                     }]
                 },
-                options: miniChartOptions
+                options: totalValueOptions
             });
         }
         
-        // Mini-gráfica 3: Stock Bajo - Línea descendente
+        // Mini-gráfica 3: Stock Bajo - Fluctuaciones realistas (ALERTA)
         const lowStockCtx = document.getElementById('lowStockChart');
         if (lowStockCtx) {
+            const lowStockOptions = {
+                ...miniChartOptions,
+                plugins: {
+                    ...miniChartOptions.plugins,
+                    tooltip: {
+                        ...miniChartOptions.plugins.tooltip,
+                        callbacks: {
+                            title: function(context) {
+                                return context[0].label;
+                            },
+                            label: function(context) {
+                                const value = context.parsed.y;
+                                return `${value} productos con stock bajo`;
+                            }
+                        }
+                    }
+                }
+            };
+            
             window.lowStockChart = new Chart(lowStockCtx, {
                 type: 'line',
                 data: {
                     labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
                     datasets: [{
-                        data: [35, 32, 28, 25, 24, 23],
-                        borderColor: '#f59e0b',
-                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        data: [15, 12, 18, 25, 22, 42],
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.3)',
                         fill: true,
-                        tension: 0.4,
-                        borderWidth: 2
+                        tension: 0.3,
+                        borderWidth: 2,
+                        pointBackgroundColor: '#ef4444',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 1,
+                        pointRadius: 3,
+                        pointHoverRadius: 4
                     }]
                 },
-                options: miniChartOptions
+                options: lowStockOptions
             });
         }
         
-        // Mini-gráfica 4: Ventas Mes - Línea ascendente
+        // Mini-gráfica 4: Ventas Mes - Fluctuaciones realistas
         const monthlySalesCtx = document.getElementById('monthlySalesChart');
         if (monthlySalesCtx) {
+            const monthlySalesOptions = {
+                ...miniChartOptions,
+                plugins: {
+                    ...miniChartOptions.plugins,
+                    tooltip: {
+                        ...miniChartOptions.plugins.tooltip,
+                        callbacks: {
+                            title: function(context) {
+                                return context[0].label;
+                            },
+                            label: function(context) {
+                                const value = context.parsed.y;
+                                return `$${value.toLocaleString()} en ventas`;
+                            }
+                        }
+                    }
+                }
+            };
+            
             window.monthlySalesChart = new Chart(monthlySalesCtx, {
                 type: 'line',
                 data: {
                     labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
                     datasets: [{
-                        data: [8500, 9200, 10500, 11800, 13200, 12450],
+                        data: [8500, 7800, 9200, 10500, 9800, 12450],
                         borderColor: '#3b82f6',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.3)',
                         fill: true,
-                        tension: 0.4,
-                        borderWidth: 2
+                        tension: 0.3,
+                        borderWidth: 2,
+                        pointBackgroundColor: '#3b82f6',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 1,
+                        pointRadius: 3,
+                        pointHoverRadius: 4
                     }]
                 },
-                options: miniChartOptions
+                options: monthlySalesOptions
             });
         }
         
@@ -788,27 +910,43 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Función para actualizar el tema de las mini-gráficas
     function updateMiniChartsTheme(isDark, backgroundColor) {
+        const textColor = isDark ? '#ffffff' : '#0f172a';
+        const tooltipBg = isDark ? 'rgba(30, 41, 59, 0.95)' : 'rgba(255, 255, 255, 0.95)';
+        const tooltipBorder = isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+        
         // Actualizar mini-gráfica de Total Productos
         if (window.totalProductsChart) {
-            window.totalProductsChart.options.plugins.tooltip.backgroundColor = backgroundColor;
+            window.totalProductsChart.options.plugins.tooltip.backgroundColor = tooltipBg;
+            window.totalProductsChart.options.plugins.tooltip.titleColor = textColor;
+            window.totalProductsChart.options.plugins.tooltip.bodyColor = textColor;
+            window.totalProductsChart.options.plugins.tooltip.borderColor = tooltipBorder;
             window.totalProductsChart.update();
         }
         
         // Actualizar mini-gráfica de Valor Total
         if (window.totalValueChart) {
-            window.totalValueChart.options.plugins.tooltip.backgroundColor = backgroundColor;
+            window.totalValueChart.options.plugins.tooltip.backgroundColor = tooltipBg;
+            window.totalValueChart.options.plugins.tooltip.titleColor = textColor;
+            window.totalValueChart.options.plugins.tooltip.bodyColor = textColor;
+            window.totalValueChart.options.plugins.tooltip.borderColor = tooltipBorder;
             window.totalValueChart.update();
         }
         
         // Actualizar mini-gráfica de Stock Bajo
         if (window.lowStockChart) {
-            window.lowStockChart.options.plugins.tooltip.backgroundColor = backgroundColor;
+            window.lowStockChart.options.plugins.tooltip.backgroundColor = tooltipBg;
+            window.lowStockChart.options.plugins.tooltip.titleColor = textColor;
+            window.lowStockChart.options.plugins.tooltip.bodyColor = textColor;
+            window.lowStockChart.options.plugins.tooltip.borderColor = tooltipBorder;
             window.lowStockChart.update();
         }
         
         // Actualizar mini-gráfica de Ventas Mes
         if (window.monthlySalesChart) {
-            window.monthlySalesChart.options.plugins.tooltip.backgroundColor = backgroundColor;
+            window.monthlySalesChart.options.plugins.tooltip.backgroundColor = tooltipBg;
+            window.monthlySalesChart.options.plugins.tooltip.titleColor = textColor;
+            window.monthlySalesChart.options.plugins.tooltip.bodyColor = textColor;
+            window.monthlySalesChart.options.plugins.tooltip.borderColor = tooltipBorder;
             window.monthlySalesChart.update();
         }
     }
