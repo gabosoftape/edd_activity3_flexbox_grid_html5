@@ -1,6 +1,6 @@
 # 📊 Dashboard de Gestión de Inventario
 
-Un dashboard administrativo moderno y responsivo desarrollado para la **Actividad 3 del curso de Estructuras de Datos** del programa **Ingeniería de Software** de la **Universidad Manuela Beltrán**.
+Un dashboard administrativo moderno y responsivo desarrollado para la **Actividad 3 del curso de DISEÑO WEB** del programa **Ingeniería de Software** de la **Universidad Manuela Beltrán**.
 
 Este proyecto demuestra el dominio de tecnologías web modernas implementando un sistema de gestión de inventario empresarial con interfaz intuitiva, funcionalidades avanzadas de visualización de datos y diseño completamente responsivo.
 
