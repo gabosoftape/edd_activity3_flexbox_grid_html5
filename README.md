@@ -780,7 +780,7 @@ Este proyecto está desarrollado para **fines educativos** como parte de una act
 
 **Autor**: [DUMAR ARTURO PABON E.]  
 **Institución**: [Universidad Manuela Beltran]  
-**Curso**: [Estructuras de Datos]  
+**Curso**: [Diseño Web]  
 **Fecha**: [17-08-2025]
 
 ## 📞 Contacto
